@@ -1,0 +1,7 @@
+.env
+.env.*
+!.env.example
+storage/logs/*.log
+public/assets/icons/*.png
+.idea/
+.vscode/
