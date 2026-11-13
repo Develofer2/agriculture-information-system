@@ -60,6 +60,19 @@ For local development, set `APP_ENV=local` and `SESSION_SECURE=false` in the loc
 php -S localhost:8000 -t public
 ```
 
+## Deploy on Render
+
+This repository includes a `Dockerfile` and `render.yaml` for Render deployment.
+
+1. Push the project to GitHub.
+2. In Render, select **New → Blueprint**.
+3. Choose the GitHub repository and select the `render.yaml` file.
+4. Enter the Supabase values for the environment variables marked as secret.
+5. Create the service and wait for the Docker build to finish.
+6. Open the generated Render URL and confirm that the login page loads.
+
+The Render service uses PHP 8.2 with Apache and `pdo_pgsql`. The free plan may sleep after inactivity, so the first request can take longer. Persistent data must remain in Supabase; the container filesystem is not a permanent storage location.
+
 ## Database migrations
 
 Run the migrations in this order:

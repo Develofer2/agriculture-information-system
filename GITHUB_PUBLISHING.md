@@ -26,7 +26,7 @@ If a real password was previously uploaded anywhere, change or rotate it before 
 Copy the repository URL. It will look like one of these:
 
 ```text
-https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+https://github.com/develofer2/agriculture-information-system.git
 git@github.com:YOUR_USERNAME/YOUR_REPOSITORY.git
 ```
 
@@ -71,7 +71,7 @@ Review the staged file list before committing. The `.env` file and database cred
 Replace the URL with your own repository URL:
 
 ```powershell
-git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+git remote add origin https://github.com/Develofer2/agriculture-information-system.git
 git remote -v
 ```
 

@@ -1,0 +1,8 @@
+.git
+.github
+.env
+.env.*
+!.env.example
+storage/logs/*
+GITHUB_PUBLISHING.md
+README.md
