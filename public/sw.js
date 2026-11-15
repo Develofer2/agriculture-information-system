@@ -1,4 +1,4 @@
-const CACHE = "agri-static-v2";
+const CACHE = "agri-static-v3";
 const FILES = [
   "offline.html",
   "assets/css/app.css",

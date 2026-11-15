@@ -169,7 +169,7 @@ function layout(string $title, callable $body): void
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#17324D">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="stylesheet" href="assets/css/app.css">
+<link rel="stylesheet" href="assets/css/app.css?v=3">
 <title>
 <?=e($title)?> | Verdant Vale</title>
 </head>
@@ -245,7 +245,7 @@ function layout(string $title, callable $body): void
 </main>
 <div class="backdrop">
 </div>
-<script src="assets/js/app.js">
+<script src="assets/js/app.js?v=3">
 </script>
 </body>
 </html>
