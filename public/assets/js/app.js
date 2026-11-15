@@ -8,7 +8,11 @@
     toggle?.setAttribute("aria-expanded", String(!value));
     toggle?.setAttribute(
       "aria-label",
-      value ? "Expand navigation" : "Collapse navigation",
+      value ? "Expand sidebar" : "Collapse sidebar",
+    );
+    toggle?.setAttribute(
+      "title",
+      value ? "Expand sidebar" : "Collapse sidebar",
     );
     localStorage.setItem("agri-sidebar-collapsed", String(value));
   };

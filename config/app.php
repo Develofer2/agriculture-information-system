@@ -124,7 +124,13 @@ status_name label FROM planting_statuses WHERE is_active ORDER BY id')->fetchAll
 
      'planting_id' => q($db,
  "SELECT p.planting_id id,
- f.farm_name || ' - ' || c.crop_name || ' (' || p.planting_date || ')' label FROM plantings p JOIN farms f ON f.farm_id=p.farm_id JOIN crops c ON c.crop_id=p.crop_id ORDER BY p.planting_date DESC")->fetchAll(),
+ f.farm_name || ' - ' || c.crop_name || ' (' || ps.status_name || ')' label
+ FROM plantings p
+ JOIN farms f ON f.farm_id=p.farm_id
+ JOIN crops c ON c.crop_id=p.crop_id
+ JOIN planting_statuses ps ON ps.status_id=p.status_id
+ WHERE ps.status_name IN ('Ready for Harvest', 'Harvested')
+ ORDER BY p.planting_date DESC")->fetchAll(),
  'quality_grade_id' => q($db,
  'SELECT quality_grade_id id,
 grade_name label FROM harvest_quality_grades WHERE is_active ORDER BY id')->fetchAll(),
@@ -165,7 +171,7 @@ function layout(string $title, callable $body): void
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="assets/css/app.css">
 <title>
-<?=e($title)?> | Agri IS</title>
+<?=e($title)?> | Verdant Vale</title>
 </head>
 <body>
 <aside class="sidebar" id="sidebar">
@@ -173,10 +179,9 @@ function layout(string $title, callable $body): void
 <span class="brand-mark">
 <?=nav_icon('crops')?>
 </span>
-<span class="brand-name">Agri IS</span>
+<span class="brand-name">Verdant Vale</span>
 </div>
-<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Collapse navigation" aria-expanded="true">
-<span aria-hidden="true">&#8249;</span>
+<button class="sidebar-toggle" id="sidebar-toggle" aria-label="Collapse sidebar" title="Collapse sidebar" aria-expanded="true">
 </button>
 <nav aria-label="Main navigation">
 <?php foreach ($links as $r => $n): ?>
@@ -212,20 +217,23 @@ function layout(string $title, callable $body): void
 <main>
 <header>
 <button class="mobile-menu icon-button" aria-label="Open navigation">&#9776;</button>
-<div>
+<div class="page-heading">
 <p class="eyebrow">AGRICULTURE INFORMATION SYSTEM</p>
 <h1>
 <?=e($title)?>
 </h1>
 </div>
 <div class="user-chip">
-<span>
+<span class="user-details">
+<span class="user-name">
 <?=e($user['full_name'])?>
 </span>
-<small>
+<small class="user-role">
 <?=e($user['role_name'])?>
 </small>
-<button id="theme-toggle" class="icon-button" aria-label="Toggle dark mode">&#9681;</button>
+</span>
+<span class="user-divider" aria-hidden="true"></span>
+<button id="theme-toggle" class="icon-button theme-button" aria-label="Toggle dark mode" title="Toggle dark mode">&#9681;</button>
 </div>
 </header>
 <?php if ($f): ?>

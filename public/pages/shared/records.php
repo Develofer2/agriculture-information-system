@@ -41,6 +41,26 @@ if (isset($modules[$route])) {
                 $errors['growing_period_days'] = 'Use at least 1 day.';
             }if (isset($data['expected_harvest_date'],$data['planting_date']) && $data['expected_harvest_date'] < $data['planting_date']) {
                 $errors['expected_harvest_date'] = 'Expected date must be on or after planting.';
+            }if ($route === 'harvests' && !$errors) {
+                $planting = q(
+                    $db,
+                    "SELECT p.planting_date, ps.status_name
+                     FROM plantings p
+                     JOIN planting_statuses ps ON ps.status_id = p.status_id
+                     WHERE p.planting_id = ?",
+                    [$data['planting_id']]
+                )->fetch();
+                if (!$planting) {
+                    $errors['planting_id'] = 'Select a valid planting record.';
+                } elseif (!in_array($planting['status_name'], ['Ready for Harvest', 'Harvested'], true)) {
+                    $errors['planting_id'] = 'This planting is not ready for harvest yet.';
+                } elseif ($data['harvest_date'] < $planting['planting_date']) {
+                    $errors['harvest_date'] = 'Harvest date cannot be before the planting date.';
+                } elseif ($data['harvest_date'] > date('Y-m-d')) {
+                    $errors['harvest_date'] = 'Harvest date cannot be in the future.';
+                } elseif ((float)$data['quantity_kg'] <= 0) {
+                    $errors['quantity_kg'] = 'Harvest quantity must be greater than zero.';
+                }
             }if (!$errors) {
                 try {
                     $db->beginTransaction();
@@ -56,6 +76,31 @@ if (isset($modules[$route])) {
                         q($db, "INSERT INTO {$m['table']} ($names) VALUES ($marks)", array_values($data));
                         $id = (int)$db->lastInsertId();
                         audit($db, 'INSERT', $m['table'], (string)$id, $data);
+                        if ($route === 'harvests') {
+                            q(
+                                $db,
+                                "UPDATE plantings
+                                 SET status_id = (
+                                     SELECT status_id
+                                     FROM planting_statuses
+                                     WHERE status_name = 'Harvested'
+                                 )
+                                 WHERE planting_id = ?
+                                 AND status_id = (
+                                     SELECT status_id
+                                     FROM planting_statuses
+                                     WHERE status_name = 'Ready for Harvest'
+                                 )",
+                                [$data['planting_id']]
+                            );
+                            audit(
+                                $db,
+                                'UPDATE',
+                                'plantings',
+                                (string)$data['planting_id'],
+                                ['status_name' => 'Harvested']
+                            );
+                        }
                         $msg = 'Record created.';
                     } $db->commit();
                     redirect($route, $msg);
@@ -74,7 +119,12 @@ if (isset($modules[$route])) {
 <h2>
 <?= $id ? 'Update record' : 'New record'?>
 </h2>
-<p class="muted">Fields marked required must be completed.</p>
+<p class="muted">
+Fields marked required must be completed.
+<?php if ($route === 'harvests'): ?>
+Only plantings marked ready or already harvested can receive a harvest record.
+<?php endif; ?>
+</p>
 </div>
 <a class="button secondary" href="<?=url($route)?>">Cancel</a>
 </div>
@@ -102,7 +152,7 @@ if (isset($modules[$route])) {
 <?php endforeach?>
 </select>
 <?php else:?>
-<input name="<?=e($f)?>" type="<?=$type?>" value="<?=e($value)?>" <?=$type === 'number' ? 'step="0.01" min="0"' : ''?> <?=!in_array($f, ['contact_number','selling_price_per_kg'], true) ? 'required' : ''?>>
+<input name="<?=e($f)?>" type="<?=$type?>" value="<?=e($value)?>" <?=$type === 'number' ? 'step="0.01" min="0"' : ''?> <?= $route === 'harvests' && $f === 'harvest_date' ? 'max="'.date('Y-m-d').'"' : ''?> <?=!in_array($f, ['contact_number','selling_price_per_kg'], true) ? 'required' : ''?>>
 <?php endif?>
 <?php if (isset($errors[$f])):?>
 <small class="field-error">

@@ -103,7 +103,11 @@ if ($route === 'users') {
 </span>
 </td>
 <td>
-<?=e($u['last_login_at'] ?? 'Not signed in yet')?>
+<?php if ($u['last_login_at']): ?>
+<?=e((new DateTimeImmutable($u['last_login_at']))->setTimezone(new DateTimeZone(date_default_timezone_get()))->format('Y-m-d H:i'))?>
+<?php else: ?>
+Not signed in yet
+<?php endif; ?>
 </td>
 <td>
 <?php if ((int)$u['user_id'] !== (int)$_SESSION['user']['user_id']):?>

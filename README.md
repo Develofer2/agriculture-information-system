@@ -1,6 +1,8 @@
-# Agriculture Information System
+# Verdant Vale Agriculture
 
-The Agriculture Information System is a web-based management platform for organizing farm operations and agricultural production records. It gives administrators and staff one place to manage farmers, farms, crops, planting activities, harvests, reports, and system activity.
+## Agriculture Information System
+
+Verdant Vale is a web-based Agriculture Information System for organizing farm operations and agricultural production records. Inspired by the welcoming feeling of a farming valley, it gives administrators and staff one place to manage farmers, farms, crops, planting activities, harvests, reports, and system activity.
 
 The application is designed for agricultural offices or farm organizations that need reliable records, role-based access, searchable data, and a clear overview of current operations.
 
@@ -73,6 +75,26 @@ This repository includes a `Dockerfile` and `render.yaml` for Render deployment.
 
 The Render service uses PHP 8.2 with Apache and `pdo_pgsql`. The free plan may sleep after inactivity, so the first request can take longer. Persistent data must remain in Supabase; the container filesystem is not a permanent storage location.
 
+### Render environment variables
+
+If the page displays `Service temporarily unavailable.`, the PHP container started but could not connect to Supabase. In Render, open **Your service → Environment** and confirm these values:
+
+| Variable                  | Value                             |
+| ------------------------- | --------------------------------- |
+| `APP_ENV`                 | `production`                      |
+| `APP_DEBUG`               | `false`                           |
+| `APP_TIMEZONE`            | `Asia/Manila`                     |
+| `SESSION_SECURE`          | `true`                            |
+| `SUPABASE_DB_HOST`        | Supabase Session Pooler host      |
+| `SUPABASE_DB_PORT`        | `5432`                            |
+| `SUPABASE_DB_NAME`        | `postgres`                        |
+| `SUPABASE_DB_USER`        | Supabase Session Pooler user      |
+| `SUPABASE_DB_PASSWORD`    | Your Supabase database password   |
+| `SUPABASE_DB_SSLMODE`     | `verify-full`                     |
+| `SUPABASE_DB_SSLROOTCERT` | `/var/www/certs/prod-ca-2021.crt` |
+
+Use the **Session pooler** connection details from Supabase **Project Settings → Database → Connect**, not the Supabase API URL or anon key. Do not add quotation marks around values in Render. After saving the variables, select **Manual Deploy → Deploy latest commit** and inspect **Logs** if the service still fails.
+
 ## Database migrations
 
 Run the migrations in this order:
@@ -80,4 +102,4 @@ Run the migrations in this order:
 1. `001_ais_schema.sql` creates the tables, indexes, functions, and triggers.
 2. `002_seed_data.sql` inserts lookup values and optional sample records.
 
-Do not upload `.env` or `storage/logs/` to GitHub or the public web root. See [GITHUB_PUBLISHING.md](GITHUB_PUBLISHING.md) for GitHub publishing instructions.
+Do not upload `.env` or `storage/logs/` to GitHub or the public web root. Submission documentation is available in the [documentation folder](documentation/), and the printable documentation PDF is available as [PROJECT_DOCUMENTATION.pdf](PROJECT_DOCUMENTATION.pdf).

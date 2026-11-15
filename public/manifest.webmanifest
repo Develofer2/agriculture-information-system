@@ -1,6 +1,6 @@
 {
-  "name": "Agriculture Information System",
-  "short_name": "Agri IS",
+  "name": "Verdant Vale Agriculture",
+  "short_name": "Verdant Vale",
   "description": "Agricultural operations records and reporting",
   "start_url": "/index.php?r=dashboard",
   "scope": "/",

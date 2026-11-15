@@ -24,7 +24,7 @@ if ($route === 'login') {
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <link rel="stylesheet" href="assets/css/app.css">
-<title>Sign in | Agri IS</title>
+<title>Sign in | Verdant Vale</title>
 </head>
 <body class="login-page">
 <section class="login-card">
